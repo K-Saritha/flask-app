@@ -5,13 +5,18 @@
     <meta charset="UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>items paget</title> 
+    <title>items page</title> 
 </head>
 <body>
     
     <ul>
         {% for item in items%}
+        {% if item==30 %}
+        <li style='color:red'>{{item}}</li>
+        
+        {% else %}
         <li>{{item}}</li>
+        {%endif%}
         {% endfor %}
     </ul>
 </body>

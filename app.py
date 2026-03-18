@@ -1,9 +1,10 @@
-from flask import Flask,request
+from flask import Flask,request,render_template
 app=Flask(__name__)
 
 @app.route('/')
 def function():
-    return "<h1>Hello world</h1>"
+    return render_template('index.html', name="saritha")
+
 
 
 @app.route('/hello',methods=['GET','POST'])
@@ -32,6 +33,25 @@ def url_params():
         return f'{greeting}, {myname}'
     else:
         return 'Please provide both "greetings" and "name" parameters.'
+
+
+
+
+@app.template_filter('reverse')
+def reverse_filter(s):
+    return s[::-1]
+
+@app.template_filter('repeat')
+def repeat_filter(s,time=3):
+    return s*time
+
+@app.route('/items')
+def list_items():
+    values=[10,20,30,40,50]
+    return render_template('items.html', items=values)
+
+
+
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
