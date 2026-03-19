@@ -1,10 +1,19 @@
-from flask import Flask,request,render_template
+from flask import Flask,request,render_template,redirect,url_for
+import modules.calculations as calc
+import modules.placeholder as p
+import logging
+logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(levelname)s - %(message)s')
+logger=logging.getLogger(__name__)
 app=Flask(__name__)
 
 @app.route('/')
 def function():
     return render_template('index.html', name="saritha")
 
+
+@app.route('/todos/<int:id>')
+def todos(id):
+    return p.get_all_todos(id)
 
 
 @app.route('/hello',methods=['GET','POST'])
@@ -15,6 +24,13 @@ def hello():
         return 'Hello from GET method'  
     else:
         return 'Unsupported method'
+
+@app.route('/calc',methods=['POST'])
+def calculate():
+    num1=int(request.form.get('num1',0))
+    num2=int(request.form.get('num2',0))
+    result=calc.add(num1,num2)
+    return f'The sum of {num1} and {num2} is {result}'
 
 @app.route('/greet/<name>')
 def greet(name):
@@ -51,7 +67,9 @@ def list_items():
     return render_template('items.html', items=values)
 
 
-
+@app.route('/redirect_endpoint')
+def redirect_endpoint():
+    return redirect(url_for('list_items'))
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
