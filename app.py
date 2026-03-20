@@ -1,6 +1,9 @@
 from flask import Flask,request,render_template,redirect,url_for
 import modules.calculations as calc
 import modules.placeholder as p
+import modules.authenticate as auth
+import modules.file_handle as file_handler
+import modules.convert_xl_to_csv as convert
 import logging
 logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(levelname)s - %(message)s')
 logger=logging.getLogger(__name__)
@@ -10,7 +13,31 @@ app=Flask(__name__)
 def function():
     return render_template('index.html', name="saritha")
 
+@app.route('/validate',methods=['GET','POST'])
+def validate():
+    if request.method=='GET':
+        return render_template('form.html')
+    elif request.method=='POST':
+        return auth.validate_user(request.form.get('username'),request.form.get('password'))
 
+
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    file = request.files['file']
+    return file_handler.handle_file(file)
+    
+    
+@app.route('/convert', methods=['POST'])
+def convert_xl_to_csv():
+    files = request.files['file']
+    return convert.convert_xl_to_csv(files)
+
+
+@app.route('/todos')
+def all_todos():    
+    return p.get_all_todos(None)
 @app.route('/todos/<int:id>')
 def todos(id):
     return p.get_all_todos(id)
